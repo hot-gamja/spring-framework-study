@@ -1,71 +1,55 @@
 package com.example.dao;
 
 import com.example.model.User;
-import org.mybatis.spring.SqlSessionTemplate;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Repository;
-
-import java.util.List;
+import java.sql.*;
 
 /**
  * User Data Access Object
  */
-@Repository
 public class UserDao {
+    // PostgreSQL JDBC 드라이버와 연결 정보 (환경에 맞게 수정)
+    private static final String DRIVER = "org.postgresql.Driver";
+    private static final String URL = "jdbc:postgresql://localhost:5432/spring-framework-db";
+    private static final String USER = "user";
+    private static final String PASSWORD = "password";
 
-    private final SqlSessionTemplate sqlSession;
+    public void add(User user) throws ClassNotFoundException, SQLException {
+        Class.forName("org.postgresql.Driver");
+        Connection c = DriverManager.getConnection(
+                "jdbc:postgresql://localhost:5432/spring-framework-db", "user", "password");
 
-    @Autowired
-    public UserDao(SqlSessionTemplate sqlSession) {
-        this.sqlSession = sqlSession;
+        PreparedStatement ps = c.prepareStatement(
+                "INSERT INTO \"user\" (\"userid\", \"name\", \"password\") VALUES (?, ?, ?)");
+        ps.setString(1, user.getId());
+        ps.setString(2, user.getName());
+        ps.setString(3, user.getPassword());
+
+        ps.executeUpdate();
+
+        ps.close();
+        c.close();
     }
 
-    /**
-     * Find all users
-     */
-    public List<User> findAll() {
-        return sqlSession.selectList("com.example.dao.UserDao.findAll");
-    }
+    public User get(String id) throws ClassNotFoundException, SQLException {
+        Class.forName("org.postgresql.Driver");
+        Connection c = DriverManager.getConnection(
+                "jdbc:postgresql://localhost:5432/spring-framework-db", "user", "password");
 
-    /**
-     * Find user by ID
-     */
-    public User findById(Long id) {
-        return sqlSession.selectOne("com.example.dao.UserDao.findById", id);
-    }
+        PreparedStatement ps = c.prepareStatement(
+                "SELECT * FROM \"user\" WHERE \"userid\" = ?");
+        ps.setString(1, id);
 
-    /**
-     * Find user by username
-     */
-    public User findByUsername(String username) {
-        return sqlSession.selectOne("com.example.dao.UserDao.findByUsername", username);
-    }
+        ResultSet rs = ps.executeQuery();
+        rs.next();
+        User user = new User();
+        user.setId(rs.getString("userid"));
+        user.setName(rs.getString("name"));
+        user.setPassword(rs.getString("password"));
 
-    /**
-     * Insert new user
-     */
-    public void insert(User user) {
-        sqlSession.insert("com.example.dao.UserDao.insert", user);
-    }
+        rs.close();
+        ps.close();
+        c.close();
 
-    /**
-     * Update existing user
-     */
-    public void update(User user) {
-        sqlSession.update("com.example.dao.UserDao.update", user);
-    }
-
-    /**
-     * Delete user by ID
-     */
-    public void delete(Long id) {
-        sqlSession.delete("com.example.dao.UserDao.delete", id);
-    }
-
-    /**
-     * Count total users
-     */
-    public long count() {
-        return sqlSession.selectOne("com.example.dao.UserDao.count");
+        return user;
     }
 }
