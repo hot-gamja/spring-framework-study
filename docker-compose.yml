@@ -27,7 +27,7 @@ services:
 
   postgres:
     image: postgres:18
-    container_name: spring-postgres
+    container_name: spring-framework-study-postgres
     ports:
       - "5432:5432"
     environment:
