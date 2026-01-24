@@ -1,6 +1,7 @@
 plugins {
     id 'java'
     id 'war'
+    id 'application'
 }
 
 group = 'com.example'
@@ -45,6 +46,10 @@ dependencies {
 
     // Jackson for JSON
     implementation 'com.fasterxml.jackson.core:jackson-databind:2.18.1'
+
+    // Lombok
+    compileOnly 'org.projectlombok:lombok:1.18.32'
+    annotationProcessor 'org.projectlombok:lombok:1.18.32'
 }
 
 war {
@@ -97,4 +102,8 @@ tasks.register('buildAndDeploy') {
         println "  http://localhost:8080"
         println "========================================="
     }
+}
+
+application {
+    mainClass = 'com.example.dao.UserDao'
 }
