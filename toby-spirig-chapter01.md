@@ -38,3 +38,9 @@ public class DUserDao extends UserDao {
     }
 }
 ```
+템플릿 메소드 패턴(Template Method Pattern)
+    슈퍼 클래스에 기본 로직 흐름 만들고 추상 메소드로 세부 구현을 서브 클래스에 맡기는 패턴
+팩토리 메소드 패턴(Factory Method Pattern) 
+    객체 생성의 인터페이스를 정의하지만 어떤 클래스의 인스턴스를 만들지는 서브 클래스에서 결정하는 패턴
+
+
